@@ -13,7 +13,7 @@ class CardPlayer(object):
         self.score = 0
         self.cards = []
 
-    def hand(self, list_of_cards):
+    def hand(self):
         '''
         Calculate hand (not sure if i should do this in game play)
         '''
@@ -24,14 +24,16 @@ class CardPlayer(object):
                 self.score += 10
             else: 
                 self.score += int(card[0])
+    
 
 class Dealer(CardPlayer):
     def __init__(self, fname, lname, previous_wins):
         super().__init__(fname, lname, previous_wins)
+    
 
 
 class GamePlay(object):
-    def __init__(self,players):
+    def __init__(self,players,dealer):
         '''
         players is a dictionary of player objects
         '''
@@ -42,6 +44,7 @@ class GamePlay(object):
                       'spades',
                       'clubs',
                       'diamonds']
+        self.dealer = dealer
     
     def setup_game(self, play_game_str):
         if play_game_str == 'y':
@@ -56,6 +59,16 @@ class GamePlay(object):
         card = [face_nums[face_num_rand], self.suits[suit_rand]]
         return card
     
+    def dealer_must(self):
+        for player in self.players:
+            if player.score >= self.dealer.score and player.score < 21:
+                return True
+            elif self.dealer.score == 21:
+                return False
+            else:
+                return False
+            
+
     def award_winner(self):
         pass
 
@@ -64,11 +77,16 @@ class GamePlay(object):
 if __name__ == "__main__":
     my_dealer = Dealer('Cam', "Johnson",0)
     my_player = CardPlayer('Cam', 'Johnson')
+    game = GamePlay([my_player], my_dealer)
     cards = [['2', 'diamonds'],['6','hearts']]
-    my_dealer.hand(cards)
-    my_player.hand(cards)
+    my_dealer.cards = [['10', 'diamonds'],['ace','hearts']]
+    my_player.cards = [['2', 'diamonds'],['ace','hearts']]
+    my_dealer.hand()
+    my_player.hand()
+    
     print(my_player.score)
     print(my_dealer.score)
+    print(game.dealer_must())
                 
                 
                 
